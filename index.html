@@ -116,6 +116,6 @@ form.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportValid
  <button class="matchmas-welcome-dismiss" type="button" aria-label="Dismiss notification">×</button>
 </div>
 <script id="matchmas-welcome-banner-script">
-(()=>{const banner=document.getElementById('matchmasWelcome');const dismiss=banner.querySelector('.matchmas-welcome-dismiss');let hideTimer;function hide(){banner.classList.remove('visible');clearTimeout(hideTimer)}dismiss.addEventListener('click',hide);setTimeout(()=>{banner.classList.add('visible');hideTimer=setTimeout(hide,4000)},2000);})();
+(()=>{const banner=document.getElementById('matchmasWelcome');const dismiss=banner.querySelector('.matchmas-welcome-dismiss');let hideTimer;function hide(){banner.classList.remove('visible');clearTimeout(hideTimer)}dismiss.addEventListener('click',hide);setTimeout(()=>{banner.classList.add('visible');hideTimer=setTimeout(hide,4000)},200);})();
 </script>
 </body></html>
