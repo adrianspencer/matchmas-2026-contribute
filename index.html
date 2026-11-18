@@ -100,4 +100,22 @@ function hide(){thanks.hidden=true;overlay.hidden=true;document.body.classList.r
 open.addEventListener('click',()=>{previousFocus=document.activeElement;overlay.hidden=false;thanks.hidden=true;document.body.classList.add('contribute-visible');status.textContent='';status.removeAttribute('style');const submit=form.querySelector('[type=submit]');submit.disabled=false;submit.textContent='Send my contribution';close.focus();});close.addEventListener('click',hide);overlay.addEventListener('click',e=>{if(e.target===overlay)hide();});document.addEventListener('keydown',e=>{if(overlay.hidden)return;if(e.key==='Escape')hide();if(e.key==='Tab'){const items=[...overlay.querySelectorAll('button,input,textarea')].filter(x=>!x.disabled);if(!items.length)return;let idx=items.indexOf(document.activeElement);if(e.shiftKey&&idx<=0){e.preventDefault();items[items.length-1].focus();}else if(!e.shiftKey&&idx===items.length-1){e.preventDefault();items[0].focus();}}});
 form.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportValidity())return;if(!MATCHMAS_FORM_ENDPOINT){status.textContent='Demo mode: submissions are not connected yet. The owner must configure a form endpoint before publishing.';return;}const btn=form.querySelector('[type=submit]');btn.disabled=true;status.textContent='Sending…';try{const response=await fetch(MATCHMAS_FORM_ENDPOINT,{method:'POST',body:new FormData(form),headers:{Accept:'application/json'}});if(!response.ok)throw new Error('Submission failed');form.reset();status.textContent='';btn.textContent='Submitted ✓';thanks.hidden=false;thanksClose.focus();}catch(err){status.textContent='Sorry, we couldn’t send that. Please try again.';}finally{if(btn.textContent!=='Submitted ✓')btn.disabled=false;}});
 })();
-</script></body></html>
+</script>
+<!-- Matchmas welcome notification: visual website banner, not a push notification. -->
+<style id="matchmas-welcome-banner-style">
+.matchmas-welcome{position:fixed;z-index:10000;top:calc(env(safe-area-inset-top,0px) + 12px);left:50%;width:min(calc(100% - 28px),430px);display:flex;align-items:center;gap:12px;padding:13px 15px;border:1px solid rgba(255,255,255,.9);border-radius:18px;background:rgba(255,250,252,.97);color:#30232b;box-shadow:0 12px 36px #23081855;font-family:Arial,Helvetica,sans-serif;transform:translate(-50%,-160%);opacity:0;pointer-events:none;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s ease;box-sizing:border-box;-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px)}
+.matchmas-welcome.visible{transform:translate(-50%,0);opacity:1;pointer-events:auto}
+.matchmas-welcome-icon{flex:0 0 44px;height:44px;border-radius:12px;background:#e92d58;color:white;display:grid;place-items:center;font-size:27px}
+.matchmas-welcome-copy{min-width:0;flex:1;line-height:1.3}.matchmas-welcome-source{font-size:11px;font-weight:700;color:#8b6c78;letter-spacing:.3px}.matchmas-welcome-title{font-size:16px;font-weight:800;margin-top:3px}.matchmas-welcome-subtitle{font-size:12px;color:#685660;margin-top:3px}
+.matchmas-welcome-dismiss{border:0;background:transparent;color:#806d76;font-size:24px;line-height:1;cursor:pointer;padding:5px;align-self:flex-start}
+@media(prefers-reduced-motion:reduce){.matchmas-welcome{transition:none}}
+</style>
+<div id="matchmasWelcome" class="matchmas-welcome" role="status" aria-live="polite" aria-label="Matchmas welcome message">
+ <span class="matchmas-welcome-icon" aria-hidden="true">♥</span>
+ <div class="matchmas-welcome-copy"><div class="matchmas-welcome-source">MATCHMAS 2026 · JUST NOW</div><div class="matchmas-welcome-title">❤️ You have a new match!</div><div class="matchmas-welcome-subtitle">Open today's door to find out who.</div></div>
+ <button class="matchmas-welcome-dismiss" type="button" aria-label="Dismiss notification">×</button>
+</div>
+<script id="matchmas-welcome-banner-script">
+(()=>{const banner=document.getElementById('matchmasWelcome');const dismiss=banner.querySelector('.matchmas-welcome-dismiss');let hideTimer;function hide(){banner.classList.remove('visible');clearTimeout(hideTimer)}dismiss.addEventListener('click',hide);setTimeout(()=>{banner.classList.add('visible');hideTimer=setTimeout(hide,4000)},2000);})();
+</script>
+</body></html>
